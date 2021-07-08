@@ -1,4 +1,6 @@
-import uuid, json, os
+import uuid
+import json
+import os
 from pathlib import Path
 from os import listdir
 from os.path import isfile, join
@@ -26,7 +28,7 @@ class Wallet:
             wallets_id.append(other_id)
         for otherId in wallets_id:
             if str(unique_id) == otherId:
-                self.generate_unique_id()
+                return self.generate_unique_id()
         return unique_id
 
     def add_balance(self, montant):
