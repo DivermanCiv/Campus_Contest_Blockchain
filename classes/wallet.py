@@ -20,11 +20,11 @@ class Wallet:
         unique_id = uuid.uuid4()
         path = Path('content/wallets')
         wallets = [f for f in listdir(path) if isfile(join(path, f))]
-        walletsId = []
+        wallets_id = []
         for f in wallets:
-            otherId, extension = str(f).split('.')
-            walletsId.append(otherId)
-        for otherId in walletsId:
+            other_id, extension = str(f).split('.')
+            wallets_id.append(other_id)
+        for otherId in wallets_id:
             if str(unique_id) == otherId:
                 self.generate_unique_id()
         return unique_id
@@ -44,16 +44,16 @@ class Wallet:
             "balance": self.balance,
             "history": self.history
         }
-        fileName = str(self.unique_id)+".json"
+        file_name = str(self.unique_id)+".json"
         path = Path('content/wallets')
-        with open(os.path.join(path, fileName), "w") as write_file:
+        with open(os.path.join(path, file_name), "w") as write_file:
             json.dump(data, write_file)
 
     @staticmethod
     def load(unique_id):
         path = Path('content/wallets')
-        fileName = str(unique_id) + ".json"
-        with open(os.path.join(path, fileName), "r") as read_file:
+        file_name = str(unique_id) + ".json"
+        with open(os.path.join(path, file_name), "r") as read_file:
             data = json.load(read_file)
         wallet = Wallet(data["unique_id"], data["balance"], data["history"])
         return wallet
