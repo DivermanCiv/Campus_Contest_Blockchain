@@ -28,6 +28,7 @@ class Chain:
         base_hash, new_hash = self.generate_hash()
 
         if self.get_block(new_hash) is None:
+            parent_hash = 00
             new_block = block.Block(base_hash, new_hash, parent_hash)
 
     def get_block(self, hash_searched):

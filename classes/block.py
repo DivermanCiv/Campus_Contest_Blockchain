@@ -5,7 +5,8 @@ from pathlib import Path
 
 
 class Block:
-    def __init__(self, base_hash, hash, parent_hash):
+    def __init__(self, name, base_hash, hash, parent_hash):
+        self.name = name
         self.base_hash = base_hash
         self.hash = hash
         self.parent_hash = parent_hash
@@ -32,6 +33,7 @@ class Block:
 
     def save(self):
         data = {
+            "name": self.name,
             "hash": self.hash,
             "parent_hash": self.parent_hash,
             "transactions": self.transactions
@@ -47,5 +49,5 @@ class Block:
         file_name = str(hash) + ".json"
         with open(os.path.join(path, file_name), "r") as read_file:
             data = json.load(read_file)
-        block = Block(data["hash"], data["parent_hash"], data["transactions"])
+        block = Block(data["name"], data["hash"], data["parent_hash"], data["transactions"])
         return block
