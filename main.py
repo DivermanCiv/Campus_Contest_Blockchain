@@ -1,11 +1,18 @@
 from classes import chain, wallet, block
 from settings import settings
+import os
 from os import listdir
 from os.path import isfile, join
 import sys
 
 # Increasing the recursion limit from 1000 to 1000000 to avoid problems with the hash generation
 sys.setrecursionlimit(10**6)
+
+if not os.path.exists(settings.PATH_TO_BLOCS):
+    os.makedirs(settings.PATH_TO_BLOCS)
+
+if not os.path.exists(settings.PATH_TO_WALLETS):
+    os.makedirs(settings.PATH_TO_WALLETS)
 
 blockchain = chain.Chain()
 
