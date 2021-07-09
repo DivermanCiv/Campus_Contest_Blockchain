@@ -1,18 +1,22 @@
 import uuid
 import json
 import os
+from settings import settings
 from pathlib import Path
 from os import listdir
 from os.path import isfile, join
 
 
 class Wallet:
-    def __init__(self, unique_id=None, balance=100, history= None):
+    def __init__(self, unique_id=None, balance=None, history= None):
         if unique_id is None:
             self.unique_id = self.generate_unique_id()
         else:
             self.unique_id = unique_id
-        self.balance = balance
+        if balance is None:
+            self.balance = settings.STARTING_BALANCE
+        else:
+            self.balance = balance
         if history is None:
             self.history = []
         else:
@@ -20,7 +24,7 @@ class Wallet:
 
     def generate_unique_id(self):
         unique_id = uuid.uuid4()
-        path = Path('content/wallets')
+        path = Path(settings.PATH_TO_WALLETS)
         wallets = [f for f in listdir(path) if isfile(join(path, f))]
         wallets_id = []
         for f in wallets:
@@ -47,16 +51,19 @@ class Wallet:
             "history": self.history
         }
         file_name = str(self.unique_id)+".json"
-        path = Path('content/wallets')
+        path = Path(settings.PATH_TO_WALLETS)
         with open(os.path.join(path, file_name), "w") as write_file:
             json.dump(data, write_file)
 
     @staticmethod
     def load(unique_id):
-        path = Path('content/wallets')
+        path = Path(settings.PATH_TO_WALLETS)
         file_name = str(unique_id) + ".json"
-        with open(os.path.join(path, file_name), "r") as read_file:
-            data = json.load(read_file)
-        wallet = Wallet(data["unique_id"], data["balance"], data["history"])
-        return wallet
+        try:
+            with open(os.path.join(path, file_name), "r") as read_file:
+                data = json.load(read_file)
+            wallet = Wallet(data["unique_id"], data["balance"], data["history"])
+            return wallet
+        except FileNotFoundError:
+            return None
 

@@ -1,0 +1,4 @@
+PATH_TO_WALLETS = "content/wallets"
+PATH_TO_BLOCS = "content/blocs"
+MAX_TOKEN_NUMBER = 10000
+STARTING_BALANCE = 100
