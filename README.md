@@ -4,7 +4,7 @@ School project about an introduction to the blockchain technology, realized on t
 ## How it works
 
 - Install the project in any folder
-- Run **main.py**
+- Run **main.py** through IDE or Console Command
 - There's nothing else to do
 
 ## Notes
