@@ -10,6 +10,11 @@ from os.path import isfile, join
 class Wallet:
     def __init__(self, unique_id=None, balance=None, history= None):
         if unique_id is None:
+            if settings.STARTING_BALANCE + settings.CURRENT_TOKEN_NUMBER > \
+                    settings.MAX_TOKEN_NUMBER:
+                raise Exception("Wallet creation aborted : it would result in too many token in "
+                                "circulation")
+            settings.CURRENT_TOKEN_NUMBER += settings.STARTING_BALANCE
             self.unique_id = self.generate_unique_id()
         else:
             self.unique_id = unique_id
@@ -35,11 +40,15 @@ class Wallet:
                 return self.generate_unique_id()
         return unique_id
 
-    def add_balance(self, montant):
-        self.balance += montant
+    def add_balance(self, amount):
+        if settings.CURRENT_TOKEN_NUMBER + amount > settings.MAX_TOKEN_NUMBER:
+            return print("Transaction aborted : it would result in too many tokens in circulation")
+        settings.CURRENT_TOKEN_NUMBER += amount
+        self.balance += amount
 
-    def sub_balance(self, montant):
-        self.balance -= montant
+    def sub_balance(self, amount):
+        settings.CURRENT_TOKEN_NUMBER -= amount
+        self.balance -= amount
 
     def send(self):
         pass
@@ -67,3 +76,6 @@ class Wallet:
         except FileNotFoundError:
             return None
 
+    def to_string(self):
+        print("Wallet n°" + str(self.unique_id) + " : balance : " + str(self.balance) + ", "
+        "history :" + str(self.history))

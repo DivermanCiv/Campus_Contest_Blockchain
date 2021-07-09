@@ -4,10 +4,13 @@ import os
 import time
 from pathlib import Path
 from settings import settings
+from datetime import datetime
 
 
 class Block:
-    def __init__(self, base_hash, hash, parent_hash, transactions=None, timestamp=None):
+    def __init__(self, unique_id, base_hash, hash, parent_hash, transactions=None,
+                 timestamp=None):
+        self.unique_id = unique_id
         self.base_hash = base_hash
         self.hash = hash
         self.parent_hash = parent_hash
@@ -41,6 +44,7 @@ class Block:
 
     def save(self):
         data = {
+            "unique_id": self.unique_id,
             "base_hash": self.base_hash,
             "hash": self.hash,
             "parent_hash": self.parent_hash,
@@ -59,8 +63,16 @@ class Block:
         try:
             with open(os.path.join(path, file_name), "r") as read_file:
                 data = json.load(read_file)
-                block = Block(data["base_hash"], data["hash"], data["parent_hash"],
+                block = Block(data["unique_id"], data["base_hash"], data["hash"],
+                              data["parent_hash"],
                               data["transactions"], data["timestamp"])
             return block
         except FileNotFoundError:
             return None
+
+    def to_string(self):
+        creation_date = datetime.fromtimestamp(self.timestamp).strftime("%d-%m-%y at %H:%M:%S")
+        print("Block " + str(self.unique_id) + ", created on " + creation_date
+              + ": base_hash : " + str(self.base_hash) + ", hash : " + str(self.hash)
+              + ", parent_hash : " + str(self.parent_hash) + ", transactions list : "
+              + str(self.transactions))

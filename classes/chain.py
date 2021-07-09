@@ -33,10 +33,12 @@ class Chain:
         base_hash, new_hash = self.generate_hash()
         if not self.blocs:
             parent_hash = "00"
+            unique_id = 0
         else:
             parent_bloc = self.get_block(self.last_block_hash)
             parent_hash = parent_bloc.hash
-        new_block = block.Block(base_hash, new_hash, parent_hash)
+            unique_id = parent_bloc.unique_id + 1
+        new_block = block.Block(unique_id, base_hash, new_hash, parent_hash)
         self.blocs[new_hash] = new_block
         self.last_block_hash = new_hash
         new_block.save()
@@ -56,18 +58,18 @@ class Chain:
         t = wallet.Wallet.load(transmitter)
         r = wallet.Wallet.load(receiver)
         if t is None:
-            return print("Transaction aborted : wallet n°" + str(transmitter) + "has not been "
+            return print("Transaction aborted : wallet n°" + str(transmitter) + " has not been "
                                                                                 "found")
         if r is None:
             return print("Transaction aborted : wallet n°" + str(receiver) + " has not been found")
         if t.balance - amount < 0:
             return print("Transaction aborted : insufficient balance on transmitter wallet")
         t.sub_balance(amount)
-        t_history = "%d has been credited to %s" % (amount, str(receiver))
+        t_history = str(amount) + " has been credited to wallet n°%s" % str(receiver)
         t.history.append(t_history)
         t.save()
         r.add_balance(amount)
-        r_history = "%d has been credited by %s" % (amount, str(transmitter))
+        r_history = str(amount) + " has been credited by wallet n°%s" % str(transmitter)
         r.history.append(r_history)
         r.save()
         b.add_transaction(str(transmitter), str(receiver), amount)
@@ -87,3 +89,7 @@ class Chain:
     def get_last_transaction_number(self):
         return self.last_transaction_number
 
+    def to_string(self, name):
+        blocks = str(self.blocs)
+        print(name + " : " + blocks + ", last block hash : " + str(self.last_block_hash) + ", "
+        "number of transactions : " + str(self.last_transaction_number))
